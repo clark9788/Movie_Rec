@@ -1,0 +1,94 @@
+https://grouplens.org/datasets/movielens/latest/
+Use the small dataset for this project.
+If you don't know the format there is a readme file with the dataset.
+Use this folder, d:\ai-python\MovieLens_Rec for everything
+Create a data directory under data_cache directory in the project and download there just like other project. 
+Use python for all the code. I noticed that the graphs you provided in the previous program had to be closed before
+the program would continue, so let me know if there are limitations that I am not aware of in the python environment.
+Create a first program to provide a table like display of the movies database that I can scroll. 
+Have the number of the movie as well as the name so I can find movies that I have watched to rate.
+I will use this table on one computer screen to find movies to rate in a second program that you will create.
+Create a recommender system program based on the data provided by this database.
+I don't care how you do this, but I want you to explain the various choices you might have and why you chose what you did.
+I am most interested in the quality of the recommender and how that quality could be ascertained. 
+Please make some comments about this.
+You can just print this out to the terminal
+I believe the rating system is 1-5 by .5 increments. If this is wrong correct me and we can adjust.
+Allow me to rate movies that I find by number in a loop, allowing me to quit by entering 0 for the movie with a rating of 0
+This doesn't need to be fancy. I will just enter from terminal. 
+Then display a list of movies that you would recommend for me, much like netflix does.
+Again, it doesn't need to be fancy, just a list of the movies and their categories.
+I believe the movies are categorized. If this is wrong, let me know.
+Keep the list to 20 movies.
+I will be the subjective test. I will have my wife be a second test.
+I will let you know how well the program does.
+
+
+Based on your plan, I need to clarify a few implementation details before creating the final plan:
+For the movie browsing program (Program 1), what should happen when it's displayed?
+Xa) Display movies in a paginated table that auto-refreshes page by page (e.g., press Enter for next page, 'q' to quit)
+b) Display all movies at once in the terminal and rely on terminal scrolling
+c) Display a certain number of movies and allow jumping to specific pages by number
+For the recommender system approach, which is most important to you?
+a) Speed and simplicity (use basic collaborative filtering with cosine similarity)
+b) Better accuracy with moderate complexity (use matrix factorization like SVD)
+Xc) Best possible accuracy regardless of complexity (use advanced methods like neural collaborative filtering)
+Should the two programs be:
+a) Separate standalone scripts (movie_browser.py and recommender.py)
+b) One integrated program with a menu system
+Xc) Separate scripts but with shared utility functions
+For storing your ratings, should they be:
+a) Saved to a CSV file that persists between runs
+Xb) Only kept in memory during the current session
+c) Added to a copy of the MovieLens ratings file
+The defaults (first options) would be: (a) paginated display, (a) simple collaborative filtering, (a) separate scripts, and (a) persistent CSV file.
+
+================================================================================
+Added: Ability to pick start page before ratings loop.
+================================================================================
+
+
+
+
+================================================================================
+IMPLEMENTATION UPDATE - PERSISTENT RATING STORAGE
+================================================================================
+
+COMPLETED: Added persistent storage for user ratings to build comprehensive preference profile
+
+NEW FEATURES IMPLEMENTED:
+1. Automatic Rating Persistence
+   - Ratings saved to user_ratings.csv in project directory
+   - Immediate save after each rating entry to prevent data loss
+   - Auto-load previous ratings when restarting program
+
+2. Enhanced Rating Interface
+   - Shows movie titles when rating (not just IDs)
+   - Tracks rating updates (e.g., "4.0 → 4.5")
+   - New commands: 'stats', 'list', '0 0'
+
+3. Rating Statistics Display
+   - Total movies rated
+   - Average rating
+   - Rating range (min-max)
+   - Rating distribution by score
+
+4. Comprehensive Rating Management
+   - Accumulative: Each session adds to previous ratings
+   - Updateable: Can change ratings for already-rated movies
+   - Safe: Ratings saved even if program interrupted
+
+BENEFITS:
+- Build comprehensive movie preference profile over time
+- Better recommendations as more movies are rated
+- No data loss between sessions
+- Easy to track rating progress and patterns
+
+TECHNICAL IMPLEMENTATION:
+- Added load_user_ratings() and save_user_ratings() methods
+- Enhanced add_user_rating() with immediate persistence
+- Updated rating_loop() with new commands and statistics
+- Added _display_rating_stats() and _display_rated_movies() methods
+- Exception handling ensures ratings saved on program interruption
+
+This addresses the user's request to "get through all the movies and then have the best possible view of my likes and dislikes" by enabling continuous rating accumulation across multiple sessions.
