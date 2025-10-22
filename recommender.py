@@ -45,7 +45,7 @@ class NeuralCollaborativeFiltering(nn.Module):
     Neural Collaborative Filtering model architecture.
     Combines embedding layers with multi-layer perceptron.
     """
-    def __init__(self, n_users, n_movies, embedding_dim=50, hidden_dims=[128, 64, 32]):
+    def __init__(self, n_users, n_movies, embedding_dim=50, hidden_dims=[128, 64, 32], dropout_rate=0.2):
         super(NeuralCollaborativeFiltering, self).__init__()
         
         self.n_users = n_users
@@ -62,7 +62,7 @@ class NeuralCollaborativeFiltering(nn.Module):
         for hidden_dim in hidden_dims:
             layers.append(nn.Linear(input_dim, hidden_dim))
             layers.append(nn.ReLU())
-            layers.append(nn.Dropout(0.2))
+            layers.append(nn.Dropout(dropout_rate))
             input_dim = hidden_dim
         
         # Output layer
@@ -212,7 +212,7 @@ class MovieRecommender:
         
         print("-" * 80)
     
-    def train_model(self, ratings_df, epochs=50, batch_size=1024, learning_rate=0.001, patience=5):
+    def train_model(self, ratings_df, epochs=50, batch_size=1024, learning_rate=0.001, patience=5, embedding_dim=50, hidden_dims=[128, 64, 32], dropout_rate=0.2):
         """Train the Neural Collaborative Filtering model with early stopping."""
         print("\nTraining Neural Collaborative Filtering model with early stopping...")
         print("This may take a few minutes...")
@@ -236,7 +236,7 @@ class MovieRecommender:
         # Initialize model
         n_users = len(self.user_to_idx)
         n_movies = len(self.movie_to_idx)
-        self.model = NeuralCollaborativeFiltering(n_users, n_movies).to(self.device)
+        self.model = NeuralCollaborativeFiltering(n_users, n_movies, embedding_dim=embedding_dim, hidden_dims=hidden_dims, dropout_rate=dropout_rate).to(self.device)
         
         # Loss and optimizer
         criterion = nn.MSELoss()
@@ -346,6 +346,17 @@ class MovieRecommender:
         
         # Explain quality metrics
         self._explain_quality_metrics(rmse, mae)
+    
+    def train_with_config(self, ratings_df, config=None):
+        """Train model using a configuration dictionary."""
+        if config is None:
+            from config import OPTIMAL_CONFIG
+            config = OPTIMAL_CONFIG
+        
+        # Remove 'name' key if present (used for identification in testing)
+        config = {k: v for k, v in config.items() if k != 'name'}
+        
+        return self.train_model(ratings_df, **config)
     
     def plot_learning_curves(self, show_plot=True, save_plot=False, filename='learning_curves.png'):
         """Plot training and validation losses to visualize overfitting.
