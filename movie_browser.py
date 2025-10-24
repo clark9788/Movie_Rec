@@ -52,10 +52,8 @@ def display_movies_page(movies_df, page_num, movies_per_page):
     # Footer
     print("-" * 120)
     has_more = end_idx < len(movies_df)
-    if has_more:
-        print("Press ENTER for next page, or 'q' + ENTER to quit")
-    else:
-        print("End of movie list. Press ENTER to return to first page, or 'q' + ENTER to quit")
+    print("Navigation options:")
+    print("  ENTER - Next page  'p' + ENTER - Previous page  'g' + ENTER - Go to specific page  'q' + ENTER - Quit")
     print("=" * 120)
     
     return has_more
@@ -94,22 +92,43 @@ def main():
             print("Please enter a valid number")
     
     # Browse movies
-    
     while True:
         has_more = display_movies_page(movies_df, page_num, MOVIES_PER_PAGE)
         
         # Get user input
         user_input = input().strip().lower()
-        
+
         if user_input == 'q':
             print("\nExiting movie browser. Goodbye!")
             break
-        
-        # Move to next page or loop back to first
-        if has_more:
-            page_num += 1
+        elif user_input == 'p':
+            # Previous page
+            if page_num > 0:
+                page_num -= 1
+            else:
+                page_num = total_pages - 1  # Go to last page
+        elif user_input == 'g':
+            # Go to specific page
+            while True:
+                try:
+                    target_page = input(f"Enter page number (1-{total_pages}): ").strip()
+                    if not target_page:
+                        break  # Cancel if empty input
+                    target_page_num = int(target_page) - 1  # Convert to 0-indexed
+                    if 0 <= target_page_num < total_pages:
+                        page_num = target_page_num
+                        break
+                    else:
+                        print(f"Please enter a page number between 1 and {total_pages}")
+                except ValueError:
+                    print("Please enter a valid number")
         else:
-            page_num = 0  # Loop back to first page
+            # Default: Move to next page or loop back to first
+            if has_more:
+                page_num += 1
+            else:
+                page_num = 0  # Loop back to first page
+        
 
 
 if __name__ == "__main__":
